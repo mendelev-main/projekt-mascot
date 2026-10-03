@@ -13,7 +13,7 @@ Tasks:
 - [x] define minimal AI-like face
 - [x] define initial animation language
 - [x] choose Blender → GLB → Three.js direction
-- [ ] create final model sheet
+- [x] create final model sheet candidate
 - [ ] approve front proportions
 - [ ] approve 3/4 proportions
 - [ ] approve side depth

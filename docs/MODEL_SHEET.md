@@ -4,6 +4,14 @@
 
 This document freezes the first modeling target for the mascot. The accompanying concept board is a visual reference; the rules below take precedence if an illustration introduces accidental details.
 
+## Visual references
+
+- Canonical owner-provided front reference: [`references/mascot-front-source.png`](../references/mascot-front-source.png)
+- Five-view model-sheet candidate: [`references/model-sheet-v01-candidate.webp`](../references/model-sheet-v01-candidate.webp)
+- Review status and precedence rules: [`references/README.md`](../references/README.md)
+
+The source image controls identity and the front appearance. The five-view sheet is a candidate for approving proportions; it does not silently lock geometry that conflicts with the normalized dimensions below.
+
 ## Canonical silhouette
 
 Front view:

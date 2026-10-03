@@ -74,10 +74,10 @@ def uv_sphere(name, scale, material, location):
     return o
 
 # ---------- materials ----------
-glass=mat_principled("M_Glass",(0.96,0.82,0.68),roughness=.08,transmission=1.0,ior=1.45)
-coffee=mat_principled("M_Coffee",(0.11,0.025,0.008),roughness=.22,ior=1.33)
-crema=mat_principled("M_Crema",(0.64,0.20,0.045),roughness=.45)
-face=mat_principled("M_Face",(1.0,.82,.48),roughness=.25,emission=(1.0,.58,.20),emission_strength=4.0)
+glass=mat_principled("M_Glass",(1.0,0.69,0.40),roughness=.07,transmission=1.0,ior=1.44)
+coffee=mat_principled("M_Coffee",(0.075,0.014,0.004),roughness=.28,ior=1.33)
+crema=mat_principled("M_Crema",(0.88,0.36,0.09),roughness=.54)
+face=mat_principled("M_Face",(1.0,.93,.78),roughness=.28,emission=(1.0,.42,.08),emission_strength=3.0)
 
 # ---------- root ----------
 root=bpy.data.objects.new("MascotRoot",None)
@@ -92,7 +92,7 @@ coffee_obj=rounded_cube("CoffeeVolume",(1.48,0.62,0.63),bevel=.30,material=coffe
 coffee_obj.parent=root
 
 # Thin crema band close to the resting surface.
-crema_obj=rounded_cube("Crema",(1.45,0.60,0.055),bevel=.08,material=crema,location=(0,0,.405))
+crema_obj=rounded_cube("Crema",(1.45,0.60,0.070),bevel=.08,material=crema,location=(0,0,.405))
 crema_obj.parent=root
 
 # Face sits slightly in front of the coffee, inside shell silhouette.

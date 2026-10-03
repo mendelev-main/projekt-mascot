@@ -35,19 +35,26 @@ function roundedBox(w:number,h:number,d:number,r:number){
 }
 
 const shellMat=new THREE.MeshPhysicalMaterial({
-  color:0xffd7ae,transparent:true,opacity:.18,roughness:.03,transmission:.98,
-  thickness:.18,ior:1.44,clearcoat:.55,clearcoatRoughness:.04
+  color:0xffc98f,transparent:true,opacity:.3,roughness:.07,transmission:.94,
+  thickness:.34,ior:1.44,clearcoat:.5,clearcoatRoughness:.08,side:THREE.DoubleSide,depthWrite:false,
+  attenuationColor:new THREE.Color(0xffb56f),attenuationDistance:2.4
 });
 const shell=new THREE.Mesh(roundedBox(3.25,1.85,1.32,.48),shellMat);
 shell.name='Shell';
 mascot.root.add(shell);
+const shellEdge=new THREE.LineSegments(
+  new THREE.EdgesGeometry(shell.geometry,32),
+  new THREE.LineBasicMaterial({color:0xc77a43,transparent:true,opacity:.28,depthWrite:false})
+);
+shellEdge.name='ShellEdge';
+mascot.root.add(shellEdge);
 
-const innerGlowMat=new THREE.MeshBasicMaterial({color:0xffd9b0,transparent:true,opacity:.055,side:THREE.BackSide});
+const innerGlowMat=new THREE.MeshBasicMaterial({color:0xffd6aa,transparent:true,opacity:.09,side:THREE.BackSide,depthWrite:false});
 const innerGlow=new THREE.Mesh(roundedBox(3.11,1.71,1.19,.42),innerGlowMat);
 innerGlow.name='InnerGlassGlow';
 mascot.root.add(innerGlow);
 
-const coffeeMat=new THREE.MeshPhysicalMaterial({color:0x3b1005,roughness:.22,clearcoat:.22,clearcoatRoughness:.16});
+const coffeeMat=new THREE.MeshPhysicalMaterial({color:0x351006,roughness:.28,clearcoat:.16,clearcoatRoughness:.2});
 const coffee=new THREE.Mesh(roundedBox(2.92,1.12,1.12,.34),coffeeMat);
 coffee.position.y=-.31;
 coffee.name='CoffeeVolume';
@@ -57,16 +64,26 @@ const surface=createCoffeeSurface(2.84,1.06,40,18);
 surface.position.y=.24;
 mascot.coffeeSurface.add(surface);
 
-const cremaMat=new THREE.MeshPhysicalMaterial({color:0xd47a2d,roughness:.46,transparent:true,opacity:.9,clearcoat:.12});
+const cremaMat=new THREE.MeshPhysicalMaterial({color:0xd9752b,roughness:.5,transparent:true,opacity:.94,clearcoat:.08});
+const cremaBandMat=new THREE.MeshPhysicalMaterial({
+  color:0xf09a4a,roughness:.54,clearcoat:.06,emissive:0x5a1907,emissiveIntensity:.45
+});
 const crema=surface.clone();
-crema.name='Crema';
+crema.name='CremaSurface';
 crema.geometry=surface.geometry.clone();
 crema.material=cremaMat;
 crema.scale.set(.995,1,.995);
 crema.position.y=.257;
 mascot.coffeeSurface.add(crema);
 
-const faceMat=new THREE.MeshStandardMaterial({color:0xfff3d7,emissive:0xffa64c,emissiveIntensity:3.2,roughness:.24});
+// The deforming top surface is viewed almost edge-on from the front. This thin
+// companion volume keeps the signature crema readable without faking a lid.
+const cremaBand=new THREE.Mesh(roundedBox(2.84,.14,1.125,.065),cremaBandMat);
+cremaBand.name='Crema';
+cremaBand.position.set(0,.27,.045);
+mascot.coffeeSurface.add(cremaBand);
+
+const faceMat=new THREE.MeshStandardMaterial({color:0xfff4dc,emissive:0xff9e42,emissiveIntensity:2.65,roughness:.28});
 function eye(x:number){
   const m=new THREE.Mesh(new THREE.CapsuleGeometry(.082,.19,8,18),faceMat);
   m.position.set(x,-.06,.755);
@@ -86,14 +103,19 @@ surpriseMouth.visible=false;
 mascot.root.add(surpriseMouth);
 
 const highlightMat=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.22,depthWrite:false});
-const highlightA=new THREE.Mesh(new THREE.CapsuleGeometry(.032,.42,6,12),highlightMat);
-highlightA.position.set(-1.18,.34,.72);
+const highlightA=new THREE.Mesh(new THREE.CapsuleGeometry(.026,.34,6,12),highlightMat);
+highlightA.position.set(-1.2,.3,.72);
 highlightA.rotation.z=-.24;
 mascot.root.add(highlightA);
 const highlightB=new THREE.Mesh(new THREE.SphereGeometry(.045,12,8),highlightMat);
 highlightB.scale.set(1.4,.55,.35);
 highlightB.position.set(-.92,.62,.73);
 mascot.root.add(highlightB);
+const highlightTop=new THREE.Mesh(new THREE.CapsuleGeometry(.025,1.5,6,18),highlightMat);
+highlightTop.position.set(-.12,.68,.71);
+highlightTop.rotation.z=Math.PI/2-.035;
+highlightTop.scale.y=.7;
+mascot.root.add(highlightTop);
 
 const shadowMat=new THREE.MeshBasicMaterial({color:0x3a1a0d,transparent:true,opacity:.13,depthWrite:false});
 const shadow=new THREE.Mesh(new THREE.CircleGeometry(1.15,64),shadowMat);
@@ -105,7 +127,6 @@ scene.add(shadow);
 scene.add(new THREE.HemisphereLight(0xffead3,0x32140a,2.55));
 const key=new THREE.DirectionalLight(0xffd2a5,4.7);key.position.set(3,4,5);scene.add(key);
 const rim=new THREE.DirectionalLight(0xff9b55,2.7);rim.position.set(-4,2,-2);scene.add(rim);
-const faceFill=new THREE.PointLight(0xffb267,8,4);faceFill.position.set(0,0,3);scene.add(faceFill);
 
 function resize(){
   const r=canvas.getBoundingClientRect();

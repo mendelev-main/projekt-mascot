@@ -26,19 +26,19 @@ one approved visual reference that can be modeled without interpretation.
 ---
 
 ## Phase 1 — Static 3D prototype
-**Status: NOT STARTED**
+**Status: IN PROGRESS**
 
 Goal: reproduce the approved design in Blender.
 
 Tasks:
-- [ ] build Shell
-- [ ] build inner coffee volume
-- [ ] create crema
-- [ ] create neutral face
-- [ ] define clean materials
+- [x] build Shell
+- [x] build inner coffee volume
+- [x] create crema
+- [x] create neutral face
+- [x] define clean materials
 - [ ] create neutral studio render
 - [ ] validate silhouette from multiple angles
-- [ ] create reproducible Blender setup/script where useful
+- [x] create reproducible Blender setup/script where useful
 
 Exit criteria:
 static mascot matches the approved design.

@@ -21,7 +21,13 @@ It intentionally avoids fluid simulation. Coffee motion is implemented later.
 
 import bpy
 import math
+from pathlib import Path
 from mathutils import Vector
+
+SCRIPT_DIR=Path(__file__).resolve().parent
+BLENDER_DIR=SCRIPT_DIR.parent
+RENDER_DIR=BLENDER_DIR / "renders"
+RENDER_DIR.mkdir(parents=True,exist_ok=True)
 
 # ---------- reset ----------
 bpy.ops.object.select_all(action='SELECT')
@@ -30,13 +36,14 @@ for datablocks in (bpy.data.meshes, bpy.data.curves, bpy.data.materials, bpy.dat
     pass
 
 # ---------- helpers ----------
-def mat_principled(name, base, roughness=.35, metallic=0.0, transmission=0.0, ior=1.45, emission=None, emission_strength=0.0):
+def mat_principled(name, base, roughness=.35, metallic=0.0, transmission=0.0, ior=1.45, alpha=1.0, emission=None, emission_strength=0.0):
     m=bpy.data.materials.new(name)
     m.use_nodes=True
     bsdf=m.node_tree.nodes.get("Principled BSDF")
     bsdf.inputs["Base Color"].default_value=(*base,1)
     bsdf.inputs["Roughness"].default_value=roughness
     bsdf.inputs["Metallic"].default_value=metallic
+    bsdf.inputs["Alpha"].default_value=alpha
     if "Transmission Weight" in bsdf.inputs:
         bsdf.inputs["Transmission Weight"].default_value=transmission
     elif "Transmission" in bsdf.inputs:
@@ -49,6 +56,15 @@ def mat_principled(name, base, roughness=.35, metallic=0.0, transmission=0.0, io
             bsdf.inputs[key].default_value=(*emission,1)
         if "Emission Strength" in bsdf.inputs:
             bsdf.inputs["Emission Strength"].default_value=emission_strength
+    if alpha < 1.0:
+        # Blender 4 used blend_method; Blender 5 replaced it with
+        # surface_render_method. Keep both branches so the scene remains
+        # reproducible in either supported major version.
+        if hasattr(m, "surface_render_method"):
+            m.surface_render_method='DITHERED'
+        elif hasattr(m, "blend_method"):
+            m.blend_method='HASHED'
+        m.diffuse_color=(*base,alpha)
     return m
 
 def rounded_cube(name, scale, bevel=.28, material=None, location=(0,0,0)):
@@ -74,8 +90,8 @@ def uv_sphere(name, scale, material, location):
     return o
 
 # ---------- materials ----------
-glass=mat_principled("M_Glass",(1.0,0.69,0.40),roughness=.07,transmission=1.0,ior=1.44)
-coffee=mat_principled("M_Coffee",(0.075,0.014,0.004),roughness=.28,ior=1.33)
+glass=mat_principled("M_Glass",(1.0,0.58,0.22),roughness=.12,transmission=.22,ior=1.44,alpha=.18)
+coffee=mat_principled("M_Coffee",(0.18,0.035,0.008),roughness=.32,ior=1.33)
 crema=mat_principled("M_Crema",(0.88,0.36,0.09),roughness=.54)
 face=mat_principled("M_Face",(1.0,.93,.78),roughness=.28,emission=(1.0,.42,.08),emission_strength=3.0)
 
@@ -146,17 +162,37 @@ bpy.context.scene.camera=cam
 
 # ---------- render ----------
 scene=bpy.context.scene
-scene.render.engine='BLENDER_EEVEE_NEXT'
+scene.render.engine='BLENDER_EEVEE' if bpy.app.version >= (5,0,0) else 'BLENDER_EEVEE_NEXT'
 scene.render.resolution_x=1200
 scene.render.resolution_y=900
 scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG'
-scene.render.filepath="//renders/mascot_static_v01.png"
 scene.world.color=(0.055,0.035,0.025)
 
 # Color management
 scene.view_settings.look='AgX - Medium High Contrast'
 
-# ---------- save ----------
-bpy.ops.wm.save_as_mainfile(filepath="//blender/projekt_mascot_v01.blend")
-print("Projekt Mascot v0.1 scene generated.")
+# ---------- review renders ----------
+def aim_camera(location,target=(0,0,-.05),lens=58):
+    cam.location=location
+    direction=Vector(target)-cam.location
+    cam.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
+    cam.data.lens=lens
+
+review_views={
+    "front":((0,-7.2,.25),(0,0,-.05),58),
+    "three-quarter":((4.8,-5.8,1.0),(0,0,-.05),58),
+    "side":((7.2,0,.20),(0,0,-.05),58),
+    "rear":((0,7.2,.25),(0,0,-.05),58),
+    "top":((0,-.15,8.0),(0,0,0),58),
+}
+
+for view_name,(location,target,lens) in review_views.items():
+    aim_camera(location,target,lens)
+    scene.render.filepath=str(RENDER_DIR / f"mascot_{view_name}_v01.png")
+    bpy.ops.render.render(write_still=True)
+
+# Restore the canonical front camera before saving the editable source scene.
+aim_camera(*review_views["front"])
+bpy.ops.wm.save_as_mainfile(filepath=str(BLENDER_DIR / "projekt_mascot_v01.blend"))
+print(f"Projekt Mascot v0.1 scene and {len(review_views)} review renders generated in {BLENDER_DIR}.")

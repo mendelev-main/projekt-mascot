@@ -36,8 +36,8 @@ Tasks:
 - [x] create crema
 - [x] create neutral face
 - [x] define clean materials
-- [ ] create neutral studio render
-- [ ] validate silhouette from multiple angles
+- [x] create neutral studio render
+- [x] validate silhouette from multiple angles
 - [x] create reproducible Blender setup/script where useful
 
 Exit criteria:

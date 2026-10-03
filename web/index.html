@@ -16,15 +16,15 @@
       <h1>Projekt Mascot</h1>
       <p>Web prototype v0.4</p>
       <div class="controls">
-        <button data-emotion="neutral">Neutral</button>
-        <button data-emotion="happy">Happy</button>
-        <button data-emotion="excited">Excited</button>
-        <button data-emotion="surprised">Surprised</button>
-        <button data-emotion="thinking">Thinking</button>
-        <button data-emotion="sad">Sad</button>
-        <button data-emotion="sleepy">Sleepy</button>
-        <button data-emotion="success">Success</button>
-        <button data-emotion="focused">Focused</button>
+        <button data-emotion="neutral" aria-pressed="true">Neutral</button>
+        <button data-emotion="happy" aria-pressed="false">Happy</button>
+        <button data-emotion="excited" aria-pressed="false">Excited</button>
+        <button data-emotion="surprised" aria-pressed="false">Surprised</button>
+        <button data-emotion="thinking" aria-pressed="false">Thinking</button>
+        <button data-emotion="sad" aria-pressed="false">Sad</button>
+        <button data-emotion="sleepy" aria-pressed="false">Sleepy</button>
+        <button data-emotion="success" aria-pressed="false">Success</button>
+        <button data-emotion="focused" aria-pressed="false">Focused</button>
         <button id="move-left">← Move</button>
         <button id="move-right">Move →</button>
         <button id="impulse">Impulse</button>
@@ -32,7 +32,7 @@
       <label>Slosh <input id="slosh" type="range" min="0" max="2" value="1" step="0.05"></label>
       <label>Damping <input id="damping" type="range" min="0.7" max="0.99" value="0.9" step="0.01"></label>
       <label><input id="reduced-motion" type="checkbox"> Reduced motion</label>
-      <pre id="debug"></pre>
+      <pre id="debug" aria-live="polite"></pre>
     </aside>
   </main>
   <script type="module" src="/src/main.ts"></script>

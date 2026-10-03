@@ -208,6 +208,9 @@ canvas.addEventListener('pointermove',e=>{
 
 function setEmotion(emotion:MascotEmotion){
   mascot.setEmotion(emotion);
+  document.querySelectorAll<HTMLButtonElement>('[data-emotion]').forEach(button=>{
+    button.setAttribute('aria-pressed',String(button.dataset.emotion===emotion));
+  });
   if(emotion==='happy') mascot.impulse(.7);
   if(emotion==='excited') mascot.impulse(1.0);
   if(emotion==='surprised') mascot.impulse(1.15);

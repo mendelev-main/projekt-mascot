@@ -78,9 +78,10 @@ Website integration
 - JavaScript / TypeScript — state machine and interaction logic.
 - Optional custom shader — only if required for better glass/liquid quality at acceptable mobile cost.
 
-## First release target: Prototype v0.1
+## Current release candidate: Prototype v0.4
 
-Prototype v0.1 should prove the character works in the browser before integrating it into the live website.
+Prototype v0.4 proves the complete Blender → GLB → Three.js path before
+integration into the live website.
 
 Required:
 - transparent closed body,
@@ -125,10 +126,20 @@ projekt-mascot/
     └── liquid/
 ```
 
-Binary assets such as `.blend`, `.glb`, images, and videos will be added when they are generated.
+Canonical generated assets are versioned in `blender/` and `models/`. The web
+build copies them into its generated `public` directory automatically.
 
 ## Status
 
-**Phase 0 — specification and design lock: IN PROGRESS**
+**Runtime v0.4 is complete; final visual approval and physical mobile QA remain.**
 
-The first objective is to freeze the mascot's proportions and visual rules before building the production 3D model.
+Available now:
+- editable Blender v0.4 scene and five review angles;
+- validated 591 KB GLB with stable semantic nodes;
+- nine emotion states, blink and pointer tracking;
+- movement-driven coffee inertia with spring/damping controls;
+- reduced-motion, offscreen pause and two fallback levels;
+- reproducible asset sync, production build and GitHub Pages workflow.
+
+See [`docs/ROADMAP.md`](docs/ROADMAP.md) for current completion and the next
+quality pass.

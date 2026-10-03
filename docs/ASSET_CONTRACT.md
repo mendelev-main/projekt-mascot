@@ -16,7 +16,9 @@ This contract defines names and coordinate conventions shared by Blender and the
 ```text
 MascotRoot
 Shell
+ShellRimFront
 CoffeeVolume
+CremaSurface
 Crema
 Eye_L
 Eye_R
@@ -29,9 +31,16 @@ Names should remain stable after Phase 1 because the web runtime may address the
 
 Expected logical materials:
 - M_Glass
+- M_GlassEdge
 - M_Coffee
+- M_CremaTop
 - M_Crema
+- M_Bubble
 - M_Face
+
+`CremaBubble_01` … `CremaBubble_07` are optional visual-detail nodes. The web
+runtime groups them with `CoffeeVolume`, `CremaSurface` and `Crema` under the
+liquid motion driver.
 
 Web runtime is allowed to replace/tune materials after GLB loading.
 

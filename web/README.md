@@ -1,8 +1,6 @@
-# Web Playground
+# Web playground
 
-Standalone Three.js environment for developing the mascot before production-site integration.
-
-## Run
+Standalone Three.js acceptance environment for the Projekt mascot.
 
 ```bash
 cd web
@@ -10,22 +8,26 @@ npm install
 npm run dev
 ```
 
-Then open the local Vite URL.
+`predev` and `prebuild` copy the canonical GLB and front render into Vite's
+generated `public` directory. The source assets remain single-copy files at the
+repository root.
 
-## Current prototype
+## Runtime v0.4
 
-The current geometry is intentionally a placeholder. It validates:
-- renderer setup;
-- responsive canvas;
-- MascotController API;
-- pointer look;
-- horizontal movement;
-- spring/damping coffee slosh driver;
-- reaction impulses;
-- reduced-motion switch.
+- loads `models/projekt-mascot-v04.glb` by stable semantic node names;
+- keeps the earlier procedural mascot as an automatic load-error fallback;
+- falls back to the static front render if the WebGL context is lost;
+- supports neutral, happy, excited, surprised, thinking, sad, sleepy, success
+  and focused states;
+- provides blinking, pointer look, horizontal movement and reaction impulses;
+- drives coffee tilt and settling from movement acceleration;
+- respects reduced-motion preferences;
+- pauses simulation and rendering while hidden or offscreen;
+- frames the model responsively for wide, narrow and mobile stages.
 
-The procedural Blender model will replace the placeholder through GLB loading after the static 3D design is approved.
+Run the production checks with:
 
-## Why build the runtime now?
-
-The signature feature—coffee reacting to acceleration—depends on runtime motion. Building the controller independently lets us tune behavior before committing to a specific mesh deformation technique.
+```bash
+python3 scripts/validate_glb.py models/projekt-mascot-v04.glb
+cd web && npm run build
+```

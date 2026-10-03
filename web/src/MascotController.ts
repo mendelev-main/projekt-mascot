@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {CoffeeSlosh,SloshSample} from './CoffeeSlosh';
-export type MascotEmotion='neutral'|'happy'|'surprised'|'sleepy';
+export type MascotEmotion='neutral'|'happy'|'excited'|'surprised'|'thinking'|'sad'|'sleepy'|'success'|'focused';
 export interface MascotOptions{sloshStrength?:number;damping?:number;reducedMotion?:boolean}
 export class MascotController{
  readonly root=new THREE.Group();readonly coffeeSurface=new THREE.Group();

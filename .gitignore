@@ -5,6 +5,8 @@
 node_modules/
 dist/
 .vite/
+web/public/models/
+web/public/fallback/
 
 # IDE
 .idea/
@@ -22,3 +24,4 @@ __pycache__/
 # Temporary exports
 tmp/
 .cache/
+output/playwright/

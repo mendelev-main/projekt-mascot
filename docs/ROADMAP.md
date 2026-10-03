@@ -1,169 +1,123 @@
-# Implementation Roadmap
+# Implementation roadmap
 
 ## Phase 0 — Specification and design lock
-**Status: IN PROGRESS**
+**Status: VISUAL APPROVAL PENDING**
 
-Goal: remove ambiguity before 3D work.
+Completed: concept, no-limbs rule, sealed shell, internal animated coffee,
+minimal face, motion language, Blender → GLB → Three.js pipeline and canonical
+model-sheet candidate.
 
-Tasks:
-- [x] define mascot concept
-- [x] define no-limbs rule
-- [x] define sealed transparent shell
-- [x] define coffee as internal animated mass
-- [x] define minimal AI-like face
-- [x] define initial animation language
-- [x] choose Blender → GLB → Three.js direction
-- [x] create final model sheet candidate
-- [ ] approve front proportions
-- [ ] approve 3/4 proportions
-- [ ] approve side depth
-- [ ] approve coffee fill level
-- [ ] approve neutral material/lighting reference
-
-Exit criteria:
-one approved visual reference that can be modeled without interpretation.
+Pending visual decisions:
+- [ ] final approval of front and 3/4 proportions
+- [ ] final approval of side depth and coffee fill level
+- [ ] final approval of neutral glass/material reference
 
 ---
 
 ## Phase 1 — Static 3D prototype
-**Status: IN PROGRESS**
+**Status: COMPLETE — v0.4 candidate**
 
-Goal: reproduce the approved design in Blender.
+- [x] shell, coffee volume, crema surface/band and bubbles
+- [x] neutral emissive face
+- [x] stable materials and semantic node hierarchy
+- [x] front, 3/4, side, rear and top review renders
+- [x] reproducible Blender generation script
+- [x] editable Blender scene and runtime GLB export
+- [x] automatic GLB contract/size validation
 
-Tasks:
-- [x] build Shell
-- [x] build inner coffee volume
-- [x] create crema
-- [x] create neutral face
-- [x] define clean materials
-- [x] create neutral studio render
-- [x] validate silhouette from multiple angles
-- [x] create reproducible Blender setup/script where useful
-
-Exit criteria:
-static mascot matches the approved design.
+Further visual refinement can happen without breaking the asset contract.
 
 ---
 
 ## Phase 2 — Face and emotion system
-**Status: NOT STARTED**
+**Status: COMPLETE IN WEB RUNTIME**
 
-Goal: one model, multiple expressions.
+- [x] neutral
+- [x] happy
+- [x] excited
+- [x] surprised
+- [x] thinking
+- [x] sad
+- [x] sleepy
+- [x] success
+- [x] focused/loading
+- [x] blink system
 
-Tasks:
-- [ ] neutral
-- [ ] happy
-- [ ] excited
-- [ ] surprised
-- [ ] thinking
-- [ ] sad
-- [ ] sleepy
-- [ ] success
-- [ ] focused/loading
-- [ ] blink system
-
-Exit criteria:
-expressions are readable at desktop and mobile UI sizes.
+Future improvement: replace runtime scale/rotation expressions with authored
+morph targets if the quality gain justifies the extra asset complexity.
 
 ---
 
 ## Phase 3 — Coffee motion prototype
-**Status: NOT STARTED**
+**Status: IN PROGRESS**
 
-Goal: convincing liquid inertia without heavy fluid simulation.
+- [x] deterministic spring/damping model
+- [x] horizontal acceleration response
+- [x] settling oscillation
+- [x] reaction impulse
+- [x] idle micro-wave in the procedural fallback
+- [x] tuneable slosh strength and damping
+- [ ] vertical acceleration and landing response
+- [ ] GLB surface morph or shader deformation
 
-Tasks:
-- [ ] test deformation approaches
-- [ ] horizontal acceleration response
-- [ ] vertical acceleration response
-- [ ] spring/damping model
-- [ ] settling oscillation
-- [ ] jump impulse
-- [ ] landing impulse
-- [ ] idle micro-wave
-- [ ] expose tuneable parameters
-
-Exit criteria:
-coffee visibly reacts to movement and settles naturally.
+The canonical GLB liquid group already tilts from motion. Fine surface waves are
+currently visible in the procedural fallback and remain the next 3D runtime task.
 
 ---
 
 ## Phase 4 — Web runtime
-**Status: NOT STARTED**
+**Status: COMPLETE — playground v0.4**
 
-Goal: run the mascot as a reusable browser component.
-
-Tasks:
-- [ ] export GLB
-- [ ] Three.js scene
-- [ ] responsive renderer
-- [ ] lighting/environment
-- [ ] load model
-- [ ] MascotController
-- [ ] emotion state switching
-- [ ] pointer tracking
-- [ ] movement API
-- [ ] connect movement acceleration to coffee
-- [ ] pause when hidden/offscreen
-- [ ] prefers-reduced-motion support
-
-Exit criteria:
-standalone playground works reliably on desktop and mobile.
+- [x] GLB export and loading
+- [x] Three.js scene and lighting
+- [x] responsive renderer and model framing
+- [x] `MascotController`
+- [x] emotion switching and pointer tracking
+- [x] movement API connected to coffee inertia
+- [x] pause simulation/rendering while hidden or offscreen
+- [x] `prefers-reduced-motion` support
+- [x] procedural load-error fallback
+- [x] static WebGL-context fallback
 
 ---
 
 ## Phase 5 — Polish and optimization
-**Status: NOT STARTED**
+**Status: IN PROGRESS**
 
-Tasks:
-- [ ] reduce model size
-- [ ] optimize draw calls
-- [ ] tune glass for mobile
-- [ ] tune coffee visibility on light/dark backgrounds
-- [ ] test Retina/high-DPR behavior
-- [ ] add static fallback
-- [ ] visual regression references
-- [ ] browser/device QA
-
-Exit criteria:
-prototype is suitable for production integration.
+- [x] GLB under the 3 MiB prototype budget
+- [x] DPR cap and responsive framing
+- [x] static fallback asset
+- [x] desktop browser acceptance pass
+- [ ] compress geometry where it produces a meaningful size reduction
+- [ ] tune glass and coffee on light/dark production backgrounds
+- [ ] add stable visual regression references
+- [ ] physical iPhone/iPad/Android performance QA
 
 ---
 
 ## Phase 6 — Website integration
 **Status: NOT STARTED**
 
-Possible first integration points:
+Candidate integration events:
 - [ ] website entry greeting
-- [ ] add-to-cart reaction
-- [ ] cart state
-- [ ] checkout/loading
-- [ ] order success
-- [ ] network error
-- [ ] high-load notice
+- [ ] product hover / add to cart / remove from cart
+- [ ] checkout loading and order success
+- [ ] network error and high-load notice
 - [ ] inactivity/sleep
 
-Important:
-integration should be added gradually. The mascot must never interfere with the primary ordering flow.
+Integration stays gradual. Mascot failures must never block the ordering flow.
 
 ---
 
-# v0.1 Acceptance checklist
+# v0.4 acceptance snapshot
 
-The first meaningful release is complete when:
-
-- [ ] mascot shape matches approved concept
-- [ ] no opening/ring/limbs
-- [ ] glass is visually clean
-- [ ] coffee is readable through shell
-- [ ] face is clear
-- [ ] idle animation works
-- [ ] blinking works
-- [ ] pointer tracking works
-- [ ] at least 4 emotions work
-- [ ] mascot can move left/right
-- [ ] coffee sloshes opposite acceleration
-- [ ] coffee settles with damping
-- [ ] mobile performance is acceptable
-- [ ] reduced-motion mode exists
-- [ ] standalone web demo is available
+- [x] sealed capsule with no opening, ring or limbs
+- [x] transparent shell, readable coffee and clear face
+- [x] idle, blink and pointer tracking
+- [x] nine emotion states
+- [x] horizontal movement and damped coffee response
+- [x] reduced-motion mode
+- [x] standalone browser demo with real GLB
+- [x] procedural and static fallback paths
+- [ ] final visual sign-off against the model sheet
+- [ ] physical mobile performance sign-off

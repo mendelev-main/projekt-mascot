@@ -146,8 +146,51 @@ scene.add(new THREE.HemisphereLight(0xffead3,0x32140a,2.55));
 const key=new THREE.DirectionalLight(0xffd2a5,4.7);key.position.set(3,4,5);scene.add(key);
 const rim=new THREE.DirectionalLight(0xff9b55,2.7);rim.position.set(-4,2,-2);scene.add(rim);
 
+// Blender keeps richer procedural materials for high-quality still renders.
+// glTF cannot carry those node graphs, so the runtime rebinds a compact,
+// deterministic material set by the stable names in ASSET_CONTRACT.md.
+const runtimeMaterials:Record<string,THREE.Material>={
+  M_Glass:new THREE.MeshPhysicalMaterial({
+    color:0xffc79a,transparent:true,opacity:.16,roughness:.07,transmission:.96,
+    thickness:.22,ior:1.44,clearcoat:.62,clearcoatRoughness:.06,depthWrite:false,
+    attenuationColor:new THREE.Color(0xffb46d),attenuationDistance:3.2
+  }),
+  M_GlassInner:new THREE.MeshPhysicalMaterial({
+    color:0xffdfbe,transparent:true,opacity:.035,roughness:.09,transmission:.98,
+    thickness:.08,ior:1.36,clearcoat:.25,clearcoatRoughness:.09,depthWrite:false
+  }),
+  M_Coffee:new THREE.MeshPhysicalMaterial({
+    color:0x250601,roughness:.24,metalness:0,clearcoat:.18,clearcoatRoughness:.22
+  }),
+  M_CremaTop:new THREE.MeshPhysicalMaterial({
+    color:0xb8470c,roughness:.54,clearcoat:.08,clearcoatRoughness:.34
+  }),
+  M_Crema:new THREE.MeshStandardMaterial({
+    color:0xf08a31,roughness:.55,emissive:0x3e0d02,emissiveIntensity:.24
+  }),
+  M_Bubble:new THREE.MeshStandardMaterial({color:0x8c2107,roughness:.38}),
+  M_Face:new THREE.MeshStandardMaterial({
+    color:0xfff4d3,roughness:.2,emissive:0xff8f2b,emissiveIntensity:3.5
+  }),
+  M_FaceGlow:new THREE.MeshBasicMaterial({
+    color:0xff9b38,transparent:true,opacity:.13,blending:THREE.AdditiveBlending,
+    depthWrite:false
+  })
+};
+
+function bindRuntimeMaterial(node:THREE.Object3D){
+  if(!(node instanceof THREE.Mesh))return;
+  const sourceMaterials=Array.isArray(node.material)?node.material:[node.material];
+  const replacements=sourceMaterials.map(source=>runtimeMaterials[source.name]??source);
+  node.material=Array.isArray(node.material)?replacements:replacements[0];
+  if(node.name==='CoffeeVolume')node.renderOrder=1;
+  if(node.name==='ShellInner')node.renderOrder=3;
+  if(node.name==='Shell')node.renderOrder=4;
+  if(node.name.endsWith('_Core')||node.name.endsWith('_Glow'))node.renderOrder=5;
+}
+
 let assetState='loading GLB';
-const modelUrl=`${import.meta.env.BASE_URL}models/projekt-mascot-v04.glb`;
+const modelUrl=`${import.meta.env.BASE_URL}models/projekt-mascot-v05.glb`;
 new GLTFLoader().load(modelUrl,gltf=>{
   const importedRoot=gltf.scene.getObjectByName('MascotRoot')??gltf.scene;
   mascot.root.add(gltf.scene);
@@ -155,6 +198,7 @@ new GLTFLoader().load(modelUrl,gltf=>{
 
   const liquidNodes:THREE.Object3D[]=[];
   importedRoot.traverse(node=>{
+    bindRuntimeMaterial(node);
     if(node.name==='CoffeeVolume'||node.name==='Crema'||node.name==='CremaSurface'||node.name.startsWith('CremaBubble_')) liquidNodes.push(node);
   });
   liquidNodes.forEach(node=>mascot.coffeeSurface.attach(node));
@@ -172,7 +216,7 @@ new GLTFLoader().load(modelUrl,gltf=>{
 
   proceduralVisuals.visible=false;
   proceduralLiquid.visible=false;
-  assetState='GLB v0.4';
+  assetState='GLB v0.5';
   setEmotion(mascot.getEmotion());
 },undefined,error=>{
   console.warn('GLB unavailable; procedural fallback remains active.',error);

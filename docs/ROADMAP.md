@@ -15,7 +15,7 @@ Pending visual decisions:
 ---
 
 ## Phase 1 — Static 3D prototype
-**Status: COMPLETE — v0.4 candidate**
+**Status: COMPLETE — v0.5 visual candidate**
 
 - [x] shell, coffee volume, crema surface/band and bubbles
 - [x] neutral emissive face
@@ -25,7 +25,8 @@ Pending visual decisions:
 - [x] editable Blender scene and runtime GLB export
 - [x] automatic GLB contract/size validation
 
-Further visual refinement can happen without breaking the asset contract.
+The v0.5 production-look pass adds layered glass, refined coffee/crema and a
+two-layer emissive face without breaking the semantic control contract.
 
 ---
 
@@ -66,7 +67,7 @@ currently visible in the procedural fallback and remain the next 3D runtime task
 ---
 
 ## Phase 4 — Web runtime
-**Status: COMPLETE — playground v0.4**
+**Status: COMPLETE — playground v0.5**
 
 - [x] GLB export and loading
 - [x] Three.js scene and lighting
@@ -88,6 +89,7 @@ currently visible in the procedural fallback and remain the next 3D runtime task
 - [x] DPR cap and responsive framing
 - [x] static fallback asset
 - [x] desktop browser acceptance pass
+- [x] Cycles hero reference for the first production-look pass
 - [ ] compress geometry where it produces a meaningful size reduction
 - [ ] tune glass and coffee on light/dark production backgrounds
 - [ ] add stable visual regression references
@@ -109,7 +111,7 @@ Integration stays gradual. Mascot failures must never block the ordering flow.
 
 ---
 
-# v0.4 acceptance snapshot
+# v0.5 acceptance snapshot
 
 - [x] sealed capsule with no opening, ring or limbs
 - [x] transparent shell, readable coffee and clear face
@@ -119,5 +121,7 @@ Integration stays gradual. Mascot failures must never block the ordering flow.
 - [x] reduced-motion mode
 - [x] standalone browser demo with real GLB
 - [x] procedural and static fallback paths
+- [x] layered glass and two-layer face in the production GLB
+- [x] Cycles hero render for visual comparison
 - [ ] final visual sign-off against the model sheet
 - [ ] physical mobile performance sign-off

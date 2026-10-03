@@ -16,7 +16,7 @@ This contract defines names and coordinate conventions shared by Blender and the
 ```text
 MascotRoot
 Shell
-ShellRimFront
+ShellInner
 CoffeeVolume
 CremaSurface
 Crema
@@ -31,14 +31,19 @@ Names should remain stable after Phase 1 because the web runtime may address the
 
 Expected logical materials:
 - M_Glass
-- M_GlassEdge
+- M_GlassInner
 - M_Coffee
 - M_CremaTop
 - M_Crema
 - M_Bubble
 - M_Face
+- M_FaceGlow
 
-`CremaBubble_01` … `CremaBubble_07` are optional visual-detail nodes. The web
+`Eye_L`, `Eye_R` and `Mouth` are semantic control nodes. Their `_Core` and
+`_Glow` children provide the visible two-layer face and follow transforms
+applied to the parent controls.
+
+`CremaBubble_01` … `CremaBubble_15` are optional visual-detail nodes. The web
 runtime groups them with `CoffeeVolume`, `CremaSurface` and `Crema` under the
 liquid motion driver.
 

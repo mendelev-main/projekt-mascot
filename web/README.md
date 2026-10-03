@@ -12,9 +12,9 @@ npm run dev
 generated `public` directory. The source assets remain single-copy files at the
 repository root.
 
-## Runtime v0.4
+## Runtime v0.5
 
-- loads `models/projekt-mascot-v04.glb` by stable semantic node names;
+- loads `models/projekt-mascot-v05.glb` by stable semantic node names;
 - keeps the earlier procedural mascot as an automatic load-error fallback;
 - falls back to the static front render if the WebGL context is lost;
 - supports neutral, happy, excited, surprised, thinking, sad, sleepy, success
@@ -28,6 +28,6 @@ repository root.
 Run the production checks with:
 
 ```bash
-python3 scripts/validate_glb.py models/projekt-mascot-v04.glb
+python3 scripts/validate_glb.py models/projekt-mascot-v05.glb
 cd web && npm run build
 ```

@@ -78,10 +78,10 @@ Website integration
 - JavaScript / TypeScript — state machine and interaction logic.
 - Optional custom shader — only if required for better glass/liquid quality at acceptable mobile cost.
 
-## Current release candidate: Prototype v0.4
+## Current release candidate: Visual prototype v0.5
 
-Prototype v0.4 proves the complete Blender → GLB → Three.js path before
-integration into the live website.
+Visual prototype v0.5 begins the production-look pass while preserving the
+complete Blender → GLB → Three.js path proven in v0.4.
 
 Required:
 - transparent closed body,
@@ -131,11 +131,12 @@ build copies them into its generated `public` directory automatically.
 
 ## Status
 
-**Runtime v0.4 is complete; final visual approval and physical mobile QA remain.**
+**Runtime v0.5 is complete; fine material/sculpt polish and physical mobile QA remain.**
 
 Available now:
-- editable Blender v0.4 scene and five review angles;
-- validated 591 KB GLB with stable semantic nodes;
+- editable Blender v0.5 scene, five review angles and a Cycles hero render;
+- layered outer/inner glass, improved coffee volume, crema and face glow;
+- validated sub-1 MiB GLB with stable semantic control nodes;
 - nine emotion states, blink and pointer tracking;
 - movement-driven coffee inertia with spring/damping controls;
 - reduced-motion, offscreen pause and two fallback levels;

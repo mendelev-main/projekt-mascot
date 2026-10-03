@@ -7,12 +7,12 @@ import sys
 from pathlib import Path
 
 EXPECTED_NODES = {
-    "MascotRoot", "Shell", "ShellRimFront", "CoffeeVolume", "CremaSurface",
+    "MascotRoot", "Shell", "ShellInner", "CoffeeVolume", "CremaSurface",
     "Crema", "Eye_L", "Eye_R", "Mouth",
 }
 EXPECTED_MATERIALS = {
-    "M_Glass", "M_GlassEdge", "M_Coffee", "M_CremaTop", "M_Crema",
-    "M_Bubble", "M_Face",
+    "M_Glass", "M_GlassInner", "M_Coffee", "M_CremaTop", "M_Crema",
+    "M_Bubble", "M_Face", "M_FaceGlow",
 }
 MAX_BYTES = 3 * 1024 * 1024
 
@@ -44,5 +44,5 @@ def main(path: Path) -> None:
 
 
 if __name__ == "__main__":
-    target = Path(sys.argv[1] if len(sys.argv) > 1 else "models/projekt-mascot-v04.glb")
+    target = Path(sys.argv[1] if len(sys.argv) > 1 else "models/projekt-mascot-v05.glb")
     main(target)

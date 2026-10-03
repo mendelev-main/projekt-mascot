@@ -6,7 +6,7 @@ on:
     paths:
       - "web/**"
       - "models/**"
-      - "blender/renders/mascot_front_v04.png"
+      - "blender/renders/mascot_hero_v05.png"
       - ".github/workflows/deploy-preview.yml"
   workflow_dispatch:
 
@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: 22
       - run: npm install
-      - run: python3 ../scripts/validate_glb.py ../models/projekt-mascot-v04.glb
+      - run: python3 ../scripts/validate_glb.py ../models/projekt-mascot-v05.glb
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:

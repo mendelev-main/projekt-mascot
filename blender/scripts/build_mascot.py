@@ -1,0 +1,162 @@
+"""
+Projekt Mascot — procedural static prototype v0.1
+
+Run in Blender:
+  blender --background --python blender/scripts/build_mascot.py
+
+Or open Blender > Scripting, load this file and Run Script.
+
+The script creates:
+- MascotRoot
+- Shell
+- CoffeeVolume
+- Crema
+- Eye_L / Eye_R
+- Mouth
+- Camera
+- simple studio lighting
+
+It intentionally avoids fluid simulation. Coffee motion is implemented later.
+"""
+
+import bpy
+import math
+from mathutils import Vector
+
+# ---------- reset ----------
+bpy.ops.object.select_all(action='SELECT')
+bpy.ops.object.delete(use_global=False)
+for datablocks in (bpy.data.meshes, bpy.data.curves, bpy.data.materials, bpy.data.cameras, bpy.data.lights):
+    pass
+
+# ---------- helpers ----------
+def mat_principled(name, base, roughness=.35, metallic=0.0, transmission=0.0, ior=1.45, emission=None, emission_strength=0.0):
+    m=bpy.data.materials.new(name)
+    m.use_nodes=True
+    bsdf=m.node_tree.nodes.get("Principled BSDF")
+    bsdf.inputs["Base Color"].default_value=(*base,1)
+    bsdf.inputs["Roughness"].default_value=roughness
+    bsdf.inputs["Metallic"].default_value=metallic
+    if "Transmission Weight" in bsdf.inputs:
+        bsdf.inputs["Transmission Weight"].default_value=transmission
+    elif "Transmission" in bsdf.inputs:
+        bsdf.inputs["Transmission"].default_value=transmission
+    if "IOR" in bsdf.inputs:
+        bsdf.inputs["IOR"].default_value=ior
+    if emission:
+        key="Emission Color" if "Emission Color" in bsdf.inputs else "Emission"
+        if key in bsdf.inputs:
+            bsdf.inputs[key].default_value=(*emission,1)
+        if "Emission Strength" in bsdf.inputs:
+            bsdf.inputs["Emission Strength"].default_value=emission_strength
+    return m
+
+def rounded_cube(name, scale, bevel=.28, material=None, location=(0,0,0)):
+    bpy.ops.mesh.primitive_cube_add(location=location)
+    o=bpy.context.object
+    o.name=name
+    o.scale=scale
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    bevel_mod=o.modifiers.new("SoftCorners","BEVEL")
+    bevel_mod.width=bevel
+    bevel_mod.segments=8
+    bpy.context.view_layer.objects.active=o
+    bpy.ops.object.shade_smooth()
+    if material: o.data.materials.append(material)
+    return o
+
+def uv_sphere(name, scale, material, location):
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=48, ring_count=24, location=location)
+    o=bpy.context.object; o.name=name; o.scale=scale
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    o.data.materials.append(material)
+    bpy.ops.object.shade_smooth()
+    return o
+
+# ---------- materials ----------
+glass=mat_principled("M_Glass",(0.96,0.82,0.68),roughness=.08,transmission=1.0,ior=1.45)
+coffee=mat_principled("M_Coffee",(0.11,0.025,0.008),roughness=.22,ior=1.33)
+crema=mat_principled("M_Crema",(0.64,0.20,0.045),roughness=.45)
+face=mat_principled("M_Face",(1.0,.82,.48),roughness=.25,emission=(1.0,.58,.20),emission_strength=4.0)
+
+# ---------- root ----------
+root=bpy.data.objects.new("MascotRoot",None)
+bpy.context.collection.objects.link(root)
+
+# Canonical dimensions roughly width:height:depth = 1.62:1:.72
+shell=rounded_cube("Shell",(1.62,0.72,1.0),bevel=.38,material=glass)
+shell.parent=root
+
+# Coffee is intentionally inset from the shell.
+coffee_obj=rounded_cube("CoffeeVolume",(1.48,0.62,0.63),bevel=.30,material=coffee,location=(0,0,-.25))
+coffee_obj.parent=root
+
+# Thin crema band close to the resting surface.
+crema_obj=rounded_cube("Crema",(1.45,0.60,0.055),bevel=.08,material=crema,location=(0,0,.405))
+crema_obj.parent=root
+
+# Face sits slightly in front of the coffee, inside shell silhouette.
+eye_l=uv_sphere("Eye_L",(.13,.055,.25),face,(-.48,-.675,-.12))
+eye_r=uv_sphere("Eye_R",(.13,.055,.25),face,( .48,-.675,-.12))
+for o in (eye_l,eye_r): o.parent=root
+
+# Mouth as bevelled curve.
+curve=bpy.data.curves.new("MouthCurve","CURVE")
+curve.dimensions='3D'
+curve.bevel_depth=.045
+curve.bevel_resolution=6
+s=curve.splines.new('BEZIER')
+s.bezier_points.add(2)
+pts=[(-.20,-.69,-.30),(0,-.71,-.39),(.20,-.69,-.30)]
+for bp,co in zip(s.bezier_points,pts):
+    bp.co=co
+    bp.handle_left_type='AUTO'
+    bp.handle_right_type='AUTO'
+mouth=bpy.data.objects.new("Mouth",curve)
+bpy.context.collection.objects.link(mouth)
+mouth.data.materials.append(face)
+mouth.parent=root
+
+# ---------- ground ----------
+ground_mat=mat_principled("M_Ground",(0.72,.52,.34),roughness=.7)
+bpy.ops.mesh.primitive_plane_add(size=20, location=(0,0,-1.12))
+ground=bpy.context.object; ground.name="Ground"; ground.data.materials.append(ground_mat)
+
+# ---------- lights ----------
+def area(name, loc, energy, size):
+    data=bpy.data.lights.new(name,'AREA'); data.energy=energy; data.shape='DISK'; data.size=size
+    o=bpy.data.objects.new(name,data); bpy.context.collection.objects.link(o); o.location=loc
+    direction=Vector((0,0,0))-o.location
+    o.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
+    return o
+
+area("Key",(4,-5,5),900,4.0)
+area("Fill",(-4,-3,2),500,3.0)
+area("Rim",(2,3,4),650,2.5)
+
+# ---------- camera ----------
+cam_data=bpy.data.cameras.new("Camera")
+cam=bpy.data.objects.new("Camera",cam_data)
+bpy.context.collection.objects.link(cam)
+cam.location=(0,-7.2,.25)
+direction=Vector((0,0,-.05))-cam.location
+cam.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
+cam.data.lens=58
+bpy.context.scene.camera=cam
+
+# ---------- render ----------
+scene=bpy.context.scene
+scene.render.engine='BLENDER_EEVEE_NEXT'
+scene.render.resolution_x=1200
+scene.render.resolution_y=900
+scene.render.resolution_percentage=100
+scene.render.image_settings.file_format='PNG'
+scene.render.filepath="//renders/mascot_static_v01.png"
+scene.world.color=(0.055,0.035,0.025)
+
+# Color management
+scene.view_settings.look='AgX - Medium High Contrast'
+
+# ---------- save ----------
+bpy.ops.wm.save_as_mainfile(filepath="//blender/projekt_mascot_v01.blend")
+print("Projekt Mascot v0.1 scene generated.")
